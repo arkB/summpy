@@ -1,15 +1,17 @@
 # Summpy
 
-Text summarization (sentence extraction) module with simple HTTP API.
+Text summarization (sentence extraction) module.
 (Currently supports Japanese only)
 
 ## License
 
 MIT License
 
+Copyright (c) 2018 Recruit Technologies Co.,Ltd.
+
 ## Requirements 
 
-### Python 2.7.*
+### Python 3.6
 
 + numpy
 + scipy
@@ -18,14 +20,6 @@ MIT License
 + cherrypy
 + MeCab or janome
 + pulp (if you use ILP-based method)
-
-## Quick start
-
-```sh
-pip install summpy
-python -m summpy.server -h 127.0.0.1 -p 8080
-curl http://127.0.0.1:8080/summarize\?sent_limit\=3\&text\=要約したい文章を入力。
-```
 
 ### Input Parameters
 
@@ -41,33 +35,6 @@ Hyper parameters for how many sentences are shown (optional)
 - `sent_limit`: number of sentences (only {lex,clex,div}rank)
 - `char_limit`: number of characters
 - `imp_require`: cumulative scores \[0.0-1.0\] (only {lex,clex,div}rank)
-
-### Example
-
-from ([http://blog.recruit-tech.co.jp/2015/08/28/recruit_two_cx/](http://blog.recruit-tech.co.jp/2015/08/28/recruit_two_cx/))
-
-#### Request
-
-```sh
-curl http://127.0.0.1:8080/summarize\?sent_limit\=3\&text\=突然ですが、リクルートのリボンモデルを耳にしたことはあるでしょうか？...
-```
-
-#### Response (JSON format)
-
-```javascript
-{
-  summary: [
-    "リクルートが提供する多くのサービスが後に言及するカスタマーとクライアント双方のマッチングを実現するサービスと称される背景にはこのリボンモデルがあります。", 
-    "そしてこのリボンモデルこそ、リクルートにおけるUXデザインそのもの、とも言えることができます。", 
-    "リボンモデルは国際規格の普及によって生まれた構想ではないものの、リボンモデルの構造はカスタマーとクライアントの体験設計基盤とも捉えることができ、UXデザインの普及・浸透と足並を揃えるかのように組織内に醸成されていきました。"
-  ],
-  debug_info: {}
-}
-```
-
-### Try with browser
-
-`http://<hostname>:<port>/static/test.html`
 
 ## Python API
 
