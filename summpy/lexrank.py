@@ -103,7 +103,7 @@ def summarize(text, sent_limit=None, char_limit=None, imp_require=None,
     debug_info = {}
     sentences = list(tools.sent_splitter_ja(text))
     scores, sim_mat = lexrank(sentences, **lexrank_params)
-    sum_scores = sum(scores.itervalues())
+    sum_scores = sum(scores.values())
     acc_scores = 0.0
     indexes = set()
     num_sent, num_char = 0, 0
@@ -152,7 +152,7 @@ Usage:
     options = dict(options)
 
     if len(options) < 2:
-        print _usage
+        print (_usage)
         sys.exit(0)
 
     fname = options['-f']
@@ -180,4 +180,4 @@ Usage:
         imp_require=imp_require, **lexrank_params
     )
     for sent in sentences:
-        print sent.strip().encode(encoding)
+        print (sent.strip())

@@ -6,6 +6,7 @@ import MeCab
 
 
 _mecab = MeCab.Tagger()
+_mecab = _mecab.parse('')
 # 品詞,品詞細分類1,品詞細分類2,品詞細分類3,活用形,活用型,原形,読み,発音
 _mecab_feat_labels = 'pos cat1 cat2 cat3 conj conj_t orig read pron'.split(' ')
 
@@ -18,18 +19,20 @@ def _mecab_node2seq(node, decode_surface=True, feat_dict=True,
                     mecab_encoding='utf-8'):
     # MeCab.Nodeはattributeを変更できない。
     while node:
+        if decode_surface:
+            node._surface = node.surface.decode(mecab_encoding)
         if feat_dict:  # 品詞の情報をdictで保存
             node.feat_dict = _mecab_parse_feat(
-                node.feature
+                node.feature.decode(mecab_encoding)
             )
         yield node
         node = node.next
 
 
 def is_stopword(n):  # <- mecab node
-    if len(n.surface) == 0:
+    if len(n._surface) == 0:
         return True
-    elif re.search(r'^[\s!-@\[-`\{-~　、-〜！-＠［-｀]+$', n.surface):
+    elif re.search(r'^[\s!-@\[-`\{-~　、-〜！-＠［-｀]+$', n._surface):
         return True
     elif re.search(r'^(接尾|非自立)', n.feat_dict['cat1']):
         return True
@@ -46,19 +49,19 @@ def not_stopword(n):  # <- mecab node
 
 
 def node2word(n):  # <- mecab node
-    return n.surface
+    return n._surface
 
 
 def node2norm_word(n):  # mecab node
     if n.feat_dict['orig'] != '*':
         return n.feat_dict['orig']
     else:
-        return n.surface
+        return n._surface
 
 
 def word_segmenter_ja(sent, node_filter=not_stopword,
                       node2word=node2norm_word, mecab_encoding='utf-8'):
-    _mecab.parse('')
+    sent = sent.encode(mecab)
     nodes = list(
         _mecab_node2seq(_mecab.parseToNode(sent), mecab_encoding=mecab_encoding)
     )
@@ -70,5 +73,5 @@ def word_segmenter_ja(sent, node_filter=not_stopword,
 
 
 if __name__ == '__main__':
-    text = '今日はいい天気ですね。'
-    print ('|'.join(word_segmenter_ja(text)))
+    text = u'今日はいい天気ですね。'
+    print ('|'.join(word_segmenter_ja(text)).encode('utf-8'))
